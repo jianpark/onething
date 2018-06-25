@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="courseMapper">
+
+	<sql id="courseColumn">
+	   user_id,user_pwd,user_name,user_phone,user_email,user_photo
+	</sql>
+	
+	<!-- 1:1의 관계 매핑하기 -->
+	<resultMap type="courseDTO" id="CourseDetailAssociationMap">
+		<id column="course_code" property="courseCode"/>
+		<result column="user_id" property="userId"/>
+		<result column="course_title" property="courseTitle"/>
+		<result column="course_top_group" property="courseTopGroup"/>
+		<result column="course_sub_group" property="courseSubGroup"/>
+		<result column="course_detail" property="courseDetail"/>
+		<result column="course_level" property="courseLevel"/>
+		<result column="course_recruit_max" property="courseRecruitMax"/>
+		<result column="course_recruit_current" property="courseRecruitCurrent"/>
+		<result column="course_recruit_period" property="courseRecruitPerid"/>
+		<result column="course_start_date" property="courseStartDate"/>
+		<result column="course_end_date" property="courseEndDate"/>
+		<result column="course_frequency" property="courseFrequency"/>
+		<result column="course_start_time" property="courseStartTime"/>
+		<result column="course_end_time" property="courseEndTime"/>
+		<result column="course_loc" property="courseLoc"/>
+		<result column="course_price" property="coursePrice"/>
+		<result column="course_url" property="courseUrl"/>
+		<result column="course_backpic" property="courseBackpic"/>
+		<association property="mentoDTO" javaType="mentoDTO">
+			<id column="user_id" property="userId"/>
+			<result column="mento_desc" property="mentoDesc"/>			
+			<association property="menteeDTO" javaType="menteeDTO">
+				<id column="user_id" property="userId"/>
+				<result column="user_photo" property="userPhoto"/>
+			</association>	
+		</association>	
+	</resultMap>	
+	
+	<!-- 1:다 인경우 매핑하기 -->
+	<resultMap type="courseDTO" id="CourseDetailCollectionMap">
+		<id column="course_code" property="courseCode"/>
+		<result column="user_id" property="userId"/>
+		<collection property="courseDateDTO" ofType="courseDateDTO">
+			<id column="course_date_code" property="courseDateCode"/>
+			<result column="course_code" property="courseCode"/>
+			<result column="day" property="day"/>
+		</collection>
+	</resultMap>
+	
+	<!-- 1:다 인경우 매핑하기 -->
+	<resultMap type="mentoReputationDTO" id="CourseReviewCollectionMap">
+		<id column="rep_code" property="repCode"/>
+		<result column="user_id" property="userId"/>
+		<result column="rep_writer" property="repWriter"/>
+		<result column="rep_content" property="repContent"/>
+		<result column="rep_date" property="repDate"/>
+		<collection property="courseDTO" ofType="courseDTO">
+			<id column="course_code" property="courseCode"/>
+			<result column="user_id" property="userId"/>		
+			<collection property="menteeListDTO" ofType="menteeDTO">
+				<id column="user_id" property="userId"/>
+				<result column="user_photo" property="userPhoto"/>
+				<result column="user_name" property="userName"/>
+			</collection>
+		</collection>
+	</resultMap>
+	
+	<!-- 1:1의 관계 매핑하기 -->
+	<resultMap type="courseDTO" id="CourseListAssociationMap">
+		<id column="course_code" property="courseCode"/>
+		<result column="user_id" property="userId"/>
+		<result column="course_title" property="courseTitle"/>
+		<result column="course_top_group" property="courseTopGroup"/>
+		<result column="course_sub_group" property="courseSubGroup"/>
+		<result column="course_detail" property="courseDetail"/>
+		<result column="course_level" property="courseLevel"/>
+		<result column="course_recruit_max" property="courseRecruitMax"/>
+		<result column="course_recruit_current" property="courseRecruitCurrent"/>
+		<result column="course_recruit_period" property="courseRecruitPerid"/>
+		<result column="course_start_date" property="courseStartDate"/>
+		<result column="course_end_date" property="courseEndDate"/>
+		<result column="course_frequency" property="courseFrequency"/>
+		<result column="course_start_time" property="courseStartTime"/>
+		<result column="course_end_time" property="courseEndTime"/>
+		<result column="course_loc" property="courseLoc"/>
+		<result column="course_price" property="coursePrice"/>
+		<result column="course_url" property="courseUrl"/>
+		<result column="course_backpic" property="courseBackpic"/>		
+		<association property="menteeDTO" javaType="menteeDTO">
+			<id column="user_id" property="userId"/>
+			<result column="user_photo" property="userPhoto"/>			
+		</association>	
+	</resultMap>
+	
+	<!-- 1:1 관계 스터기 기본요소-->
+	<select id="courseDetailAssociation" resultMap="CourseDetailAssociationMap">	
+		select course_code, c.user_id,course_title,course_top_group,course_sub_group,course_detail,course_level,
+		course_recruit_max,course_recruit_current,course_recruit_period,course_start_date,course_end_date,
+		course_frequency,course_start_time,course_end_time,course_loc,course_price,course_url,course_backpic,
+		m.mento_desc, me.user_photo
+		from course c join mento m 
+		on c.user_id = m.user_id
+		join mentee me 
+		on m.user_id = me.user_id
+		where course_code=#{_parameter}	
+	</select>
+	
+	<!-- 찜하기확인 -->
+	<select id="courseFav" parameterType="map" resultType="string">
+		select course_code from course_fav where user_id=#{userId} and course_code=#{couseCode}
+	</select>
+	
+	<!-- 찜하기 저장 Ajax 삭제하기 -->	
+	<delete id="favDelete" parameterType="map">
+		delete from course_fav where user_id=#{userId} and course_code=#{couseCode}
+	</delete>
+	
+	<!-- 찜하기 저장 Ajax 삽입하기 -->
+	<insert id="favInsert" parameterType="map">
+		insert into course_fav values(#{couseCode},#{userId})
+	</insert>
+	
+	<!-- 결재 확인 -->
+	<select id="coursePay" parameterType="map" resultType="string">
+		select course_code from course_regist where user_id=#{userId} and course_code=#{courseCode}
+	</select>
+	
+	<!-- 1:다의 관계 스터디 요일-->
+	<select id="courseDay" parameterType="string" resultMap="CourseDetailCollectionMap">
+		select cd.day
+		from course c join course_date cd
+		on c.course_code = cd.course_code
+		where c.course_code=#{_parameter}	
+	</select>
+	
+	<!-- 1:다의 관계 강사 리뷰 -->
+	<select id="courseReview" parameterType="string" resultMap="CourseReviewCollectionMap">
+		select c.user_id, rep_writer, rep_content,user_name, user_photo, rep_date
+		from mento_reputation m 
+		join course c
+		on c.user_id = m.user_id
+		join mentee me 
+		on me.user_id = m.rep_writer
+		where c.course_code=#{_parameter}	
+	</select>
+	
+  <!-- 강좌검색하기  or course_title=#{_parameter} -->
+   <select id="mainCourseSearch" parameterType="string" resultMap="CourseDetailAssociationMap">   
+   
+      select course_code, c.user_id,course_title,course_top_group,course_sub_group,course_detail,course_level,
+      course_recruit_max,course_recruit_current,course_recruit_period,course_start_date,course_end_date,
+      course_frequency,course_start_time,course_end_time,course_loc,course_price,course_url,course_backpic,
+      m.mento_desc, me.user_photo
+      from course c join mento m 
+      on c.user_id = m.user_id
+      join mentee me 
+      on m.user_id = me.user_id
+      where me.user_name= upper(#{_parameter}) or course_title like upper('%'||#{_parameter}||'%') 
+      
+   </select>
+	
+	<!-- 스터디리스트 전체조회 -->
+	<select id="courseListSelect" resultMap="CourseListAssociationMap">
+		select course_code,c.user_id,course_title,course_top_group,course_sub_group,
+		course_level,course_start_date,
+		course_end_date,course_start_time,course_end_time,course_loc,
+		course_price,course_backpic,m.user_photo
+		from course c 
+		join mentee m
+		on c.user_id = m.user_id
+		where course_recruit_max > course_recruit_current
+		and course_start_date > sysdate
+		ORDER BY course_recruit_current DESC
+	</select>
+
+	<!-- 스터디검색 -->
+	<select id="courseSeach" parameterType="map" resultMap="CourseListAssociationMap">		
+		select course_code,c.user_id,course_title,course_top_group,course_sub_group,
+		course_level,course_start_date,
+		course_end_date,course_start_time,course_end_time,course_loc,
+		course_price,course_backpic,m.user_photo
+		from course c 
+		join mentee m
+		on c.user_id = m.user_id
+		where course_recruit_max > course_recruit_current
+		and course_start_date > sysdate
+		<if test="courseLevel!='레벨'">
+			and course_level=#{courseLevel}
+		</if>
+        <if test="courseLoc!='지역'">
+        	and course_loc=#{courseLoc}
+        </if>
+        <if test="courseSubGroup!='분류'">
+        	and course_sub_group=#{courseSubGroup}  
+        </if>
+        <if test="day!='시간'">
+		    <if test="day.equals('평일')">
+		        and course_code in (select distinct course_code from course_date where day not in('토','일'))
+	        </if>
+	        <if test="day.equals('주말')">
+		        and course_code in (select distinct course_code from course_date where day in('토','일'))
+	        </if>
+        </if>
+        ORDER BY course_recruit_current DESC
+	</select>
+	
+	<!-- 추천강좌 -->
+	<select id="selectCourseRecommend" resultMap="CourseListAssociationMap">
+		
+     <!--  select course_code,c.user_id,course_title,course_top_group,course_sub_group,course_detail,course_level,course_recruit_max,
+      course_recruit_current,course_recruit_period,course_start_date,course_end_date,course_frequency,course_start_time,course_end_time,
+      course_loc,course_price,course_url,course_backpic, me.user_photo
+      from course c join mentee me
+      on c.user_id = me.user_id
+      where c.user_id in (select user_id 
+      from (select user_id, crc, rank() over(order by crc desc) rk
+      from(select user_id, sum(course_recruit_current) crc
+      from course
+      group by user_id))
+      where rk &lt;= 4)
+      and rownum &lt;=3  -->
+      
+      select course_code,c.user_id,course_title,course_top_group,course_sub_group,
+	  course_level,course_start_date,
+	  course_end_date,course_start_time,course_end_time,course_loc,
+	  course_price,course_backpic,m.user_photo
+	  from course c 
+	  join mentee m
+	  on c.user_id = m.user_id
+	  where course_recruit_max > course_recruit_current
+	  and course_start_date > sysdate and rownum &lt;=3
+	  ORDER BY course_recruit_current DESC
+		
+	</select>
+	
+	
+
+   
+</mapper> 

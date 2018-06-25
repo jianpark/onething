@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminMapper">
+
+
+	<resultMap id="menteeDTOMap" type="menteeDTO">
+		<id column="user_id" property="userId" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+	</resultMap>
+
+	<resultMap id="mentoDTOMap" type="mentoDTO">
+		<id column="user_id" property="userId" />
+		<result column="mento_resume" property="mentoResume" />
+		<result column="mento_desc" property="mentoDesc" />
+		<result column="mento_major" property="mentoMajor" />
+		<result column="mento_major2" property="mentoMajor2" />
+		<result column="mento_major3" property="mentoMajor3" />
+
+		<association property="menteeDTO" javaType="menteeDTO">
+			<id column="mentee_id" property="userId" />
+			<result column="user_pwd" property="userPwd" />
+			<result column="user_name" property="userName" />
+			<result column="user_phone" property="userPhone" />
+			<result column="user_email" property="userEmail" />
+			<result column="user_photo" property="userPhoto" />
+		</association>
+
+	</resultMap>
+
+	<select id="selectMentee" resultMap="menteeDTOMap">
+		select user_id, user_name,
+		user_phone, user_email
+		from Mentee
+		order by user_name
+	</select>
+
+	<delete id="deleteMentee" parameterType="string">
+		delete from mentee where
+		user_id=#{value}
+	</delete>
+
+	<select id="selectMento" resultMap="mentoDTOMap">
+		select mento.user_id,
+		mento_resume, mento_major, mento_major2, mento_major3,
+		mento_desc,
+		mentee.user_id as mentee_id, user_pwd, user_name,
+		user_phone,
+		user_email, user_photo
+		from mento, mentee
+		where
+		mentee.user_id=mento.user_id
+		order by user_name
+	</select>
+
+	<delete id="deleteMento" parameterType="string">
+		delete from mento where user_id=#{value}
+	</delete>
+
+
+</mapper>

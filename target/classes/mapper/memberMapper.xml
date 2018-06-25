@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+
+	<sql id="menteeColumn">
+	   user_id,user_pwd,user_name,user_phone,user_email,user_photo
+	</sql>
+	
+	<sql id="mentoColumn">
+	   user_id,mento_resume,mento_desc,mento_major,mento_major2,mento_major3
+	</sql>
+	
+	<sql id="mentoReputation">
+		rep_code,user_id,rep_writer,rep_content,rep_date
+	</sql>
+	
+	<sql id="applicant">
+		applicant_resume,applicant_major,applicant_major2,applicant_major3,applicant_status
+	</sql>
+	
+	
+	<resultMap type="mentoDTO" id="mentoSelectMap">
+	  <id column="user_id" property="userId"/>
+	  <result column="mento_resume" property="mentoResume"/>
+	  <result column="mento_desc" property="mentoDesc"/>
+	  <result column="mento_major" property="mentoMajor"/>
+	  <result column="mento_major2" property="mentoMajor2"/>
+	  <result column="mento_major3" property="mentoMajor3"/>
+	</resultMap>
+	
+	<resultMap type="menteeDTO" id="menteeSelectMap">
+	  <id column="user_id" property="userId"/>
+	  <result column="user_pwd" property="userPwd"/>
+	  <result column="user_name" property="userName"/>
+	  <result column="user_phone" property="userPhone"/>
+	  <result column="user_email" property="userEmail"/>
+	  <result column="user_photo" property="userPhoto"/>
+	</resultMap>
+	
+	<resultMap type="mentoReputationDTO" id="mentoRepSelectMap">
+	  <id column="rep_code" property="repCode"/>
+	  <result column="user_id" property="userId"/>
+	  <result column="rep_writer" property="repWriter"/>
+	  <result column="rep_content" property="repContent"/>
+	  <result column="rep_date" property="repDate"/>
+	  </resultMap>
+	  
+	 
+	  <resultMap type="applicantDTO" id="applicantSelectMap">
+	  <result column="user_id" property="userId"/>
+	  <result column="applicant_resume" property="applicantResume"/>
+	  <result column="applicant_major" property="applicantMajor"/>
+	  <result column="applicant_major2" property="applicantMajor2"/>
+	  <result column="applicant_major3" property="applicantMajor3"/>
+	  <result column="applicant_status" property="applicantStatus"/>
+	  <association property="menteeDTO" javaType="menteeDTO">
+			<id column="user_id" property="userId"/>
+			<result column="user_name" property="userName"/>			
+		</association>
+	  </resultMap>
+
+   <insert id="insertMentee" parameterType="menteeDTO">
+      insert into mentee
+      values(#{userId},#{userPwd},#{userName},#{userPhone},#{userEmail},#{userPhoto})
+   </insert>
+
+   <insert id="insertApplicant" parameterType="applicantDTO">
+      insert into applicant
+      values(#{userId},#{applicantResume},#{applicantMajor},#{applicantMajor2},#{applicantMajor3},#{applicantStatus})
+   </insert>
+   
+   <insert id="insertInterested" parameterType="interestedDTO">
+      insert into interested 
+      values('inter'||lpad(inter_seq.nextval,4,'0'), #{userId}, #{interField1}, #{interField2}, #{interField3})
+   </insert>
+
+	<select id="idcheck" resultType="int">
+		select count(*) from mentee where user_Id=#{value}
+	</select>
+	
+<!-- 	<insert id="insertAuthority" parameterType="string">
+      insert into authority 
+      values(#{_parameter}, 'mentee')
+   </insert> -->
+   
+   <!-- id에 해당하는 정보 검색 -->
+	<select id="selectMemberById" parameterType="string"   resultMap="menteeSelectMap">
+	  select <include refid="menteeColumn"/>
+	  from mentee
+	  where user_id=#{_parameter}
+	</select>
+	
+	<!-- countMentee -->
+	<select id="selectCountMentee" resultType="int">
+		select count(*) 
+		from mentee
+	</select>
+	
+	<!-- countMento -->
+	<select id="selectCountMento" resultType="int">
+		select count(*)
+		from mento
+	</select>
+	
+	<!-- countCourse -->
+	<select id="selectCountCourse" resultType="int">
+		select count(*)
+		from course
+	</select>
+	
+	<!-- countReputation -->
+	<select id="selectCountReputation" resultType="int">
+		select count(*)
+		from mento_reputation
+	</select>
+	
+	<!-- selectReputation -->
+	<select id="selectReputation" resultMap="mentoRepSelectMap">
+		select <include refid="mentoReputation"/>
+		from mento_reputation
+		order by rep_date
+	</select>
+	
+	<!-- 회원가입된 멤버인지 확인 -->
+	<select id="selectSeachMember" parameterType="map" resultType="string">
+		select user_id from mentee where user_name=#{userName} and user_email=#{userEmail}
+	</select>
+	
+	<!-- 암호화된 비밀번호로 수정 -->
+	<update id="updateUserPwd" parameterType="map">
+		update mentee set user_pwd=#{userPwd} where user_id=#{userId} 
+	</update>
+	
+	<!-- 멘티확인 -->
+	<select id="isMentee" parameterType="string"  resultMap="menteeSelectMap" >
+		select <include refid="menteeColumn"/>
+		from mentee where user_id=#{_parameter}
+	</select>
+	
+	<!-- 멘토확인 -->
+	<select id="isMento" parameterType="string"  resultMap="mentoSelectMap" >
+		select <include refid="mentoColumn"/>
+		from mento where user_id=#{_parameter}
+	</select>
+	
+	<!-- 지원자조회 -->
+	<select id="selectApplicant" resultMap="applicantSelectMap">
+		select a.user_id, applicant_resume,applicant_major,applicant_major2,applicant_major3,applicant_status,m.user_name
+		from applicant a 
+		join mentee m
+		on a.user_id = m.user_id
+	</select>
+	
+	<!-- applicant 심사상태 update -->
+	<update id="applicantStatusUpdate" parameterType="map">
+		update applicant 
+		set applicant_status=#{selectBoxStatus}
+		where user_id=#{userId}
+	</update>
+	
+	<!-- applicant 심사상태 delete -->
+	<delete id="applicantStatusDelete" parameterType="string">
+		delete from applicant
+		where user_id=#{userId}
+	</delete>
+	
+	<!-- 회원 role insert -->
+	<insert id="menteeRoleUpdate" parameterType="string">
+		insert into authority values(#{_parameter},'ROLE_MENTO')
+	</insert>
+	
+	<!-- notification 승인 insert -->
+	<insert id="notificationInsert" parameterType="string">
+		insert into notification values(lpad(inter_seq.nextval,4,'0'),#{userId},'관리자','멘토승인이 완료되었습니다. 마이페이지 프로필수정에서 본인을 수정해주세요.',sysdate,0)
+	</insert>
+	
+	<!-- 면접 승인 insert -->
+   <insert id="notificationInsert2" parameterType="string">
+      insert into notification values(lpad(inter_seq.nextval,4,'0'),#{userId},'관리자','서류심사에 합격하였습니다. 면접장소와 시간은 직접연락드리겠습니다.',sysdate,0)
+   </insert>
+	
+	<!-- notification 거절 insert -->
+	<insert id="notificationInsertDeny" parameterType="string">
+		insert into notification values(lpad(inter_seq.nextval,4,'0'),#{userId},'관리자','멘토승인이 거절되었습니다.',sysdate,0)
+	</insert>
+	
+	<!-- mento 승인 전 applicant 정보 select -->
+	<select id="beforeApplicantSelect" parameterType="string" resultMap="applicantSelectMap">
+		select *
+		from applicant
+		where user_id=#{_parameter}
+	</select>
+	
+	<!-- mento 승인 후 mento 정보 insert -->
+	<insert id="afterApplicantInsert" parameterType="mentoDTO">
+		insert into mento values(#{userId},#{mentoResume},#{mentoMajor},#{mentoMajor2},#{mentoMajor3},#{mentoDesc})
+	</insert>
+	
+	
+   
+</mapper> 

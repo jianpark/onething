@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+
+	<resultMap type="qnADTO" id="qnASelectMap">
+		<id column="qa_code" property="qaCode" />
+		<result column="user_id" property="userId" />
+		<result column="qa_reply_code" property="qaReplyCode" />
+		<result column="qa_title" property="qaTitle" />
+		<result column="qa_content" property="qaContent" />
+		<result column="qa_date" property="qaDate"/>
+	</resultMap>
+
+	
+	<select id="selectAll" resultMap="qnASelectMap">
+		select *
+		from qna
+		where qa_reply_code is null
+	</select>
+	
+	<select id="selectRepAll" resultMap="qnASelectMap">
+		select *
+		from qna
+		where qa_reply_code is not null
+	</select>
+	
+	<insert id="insertQnA" parameterType="qnADTO">
+		insert into qna 
+		values('qa'||lpad(qa_seq.nextval,4,'0'),#{userId},null,#{qaTitle}, #{qaContent}, sysdate)
+	</insert>
+	
+	<select id="select" resultMap="qnASelectMap" parameterType="String">
+		select *
+		from qna
+		where qa_code=#{_parameter}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		delete
+		from qna
+		where qa_code=#{_parameter}
+	</delete>
+	
+	<update id="update" parameterType="qnADTO">
+		update qna
+		set qa_title=#{qaTitle}, qa_content=#{qaContent}, qa_date=sysdate
+		where qa_code=#{qaCode}
+	</update>
+	
+	<insert id="insertRep" parameterType="qnADTO">
+		insert into qna 
+		values('qa'||lpad(qa_seq.nextval,4,'0'),#{userId},#{qaReplyCode},#{qaTitle}, #{qaContent}, sysdate)
+	</insert>
+	
+</mapper> 
+ 

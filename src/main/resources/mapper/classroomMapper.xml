@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classroomMapper">
+
+	<resultMap type="crAsgnDTO" id="asgnSelectMap">
+		<id column="cr_asgn_code" property="crAsgnCode" />
+		<result column="course_code" property="courseCode" />
+		<result column="user_id" property="userId" />
+		<result column="cr_asgn_title" property="crAsgnTitle" />
+		<result column="cr_asgn_deadline" property="crAsgnDeadline" />
+		<result column="cr_asgn_date" property="crAsgnDate" />
+		<result column="cr_asgn_content" property="crAsgnContent" />
+		<result column="cr_asgn_readnum" property="crAsgnReadnum" />
+	</resultMap>
+
+	<resultMap type="crSubAsgnDTO" id="subAsgnSelectMap">
+		<id column="cr_subasgn_code" property="crSubasgnCode" />
+		<result column="cr_asgn_code" property="crAsgnCode" />
+		<result column="user_id" property="userId" />
+		<result column="cr_subasgn_title" property="crSubasgnTitle" />
+		<result column="cr_subasgn_content" property="crSubasgnContent" />
+		<result column="cr_subasgn_date" property="crSubasgnDate" />
+		<result column="cr_subasgn_file" property="crSubasgnFile" />
+	</resultMap>
+
+	<!-- 멘토 과제등록 resultMap (멘티에 멘토 이름이 있으므로 멘티와 매핑시켰음) -->
+	<resultMap type="menteeDTO" id="menteeAsgnDTOMap">
+		<id column="user_id" property="userId" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_photo" property="userPhoto" />
+		<collection property="asgns" ofType="crAsgnDTO">
+			<id column="cr_asgn_code" property="crAsgnCode" />
+			<result column="course_code" property="courseCode" />
+			<result column="user_id" property="userId" />
+			<result column="cr_asgn_title" property="crAsgnTitle" />
+			<result column="cr_asgn_deadline" property="crAsgnDeadline" />
+			<result column="cr_asgn_date" property="crAsgnDate" />
+			<result column="cr_asgn_content" property="crAsgnContent" />
+			<result column="cr_asgn_readnum" property="crAsgnReadnum" />
+		</collection>
+	</resultMap>
+
+	<sql id="crAsgnColumnName">
+		cr_asgn_code,course_code,user_id,cr_asgn_title,cr_asgn_deadline,cr_asgn_date,cr_asgn_content,cr_asgn_readnum
+	</sql>
+	<sql id="crSubAsgnColumnName">
+		cr_subasgn_code,cr_asgn_code,user_id,cr_subasgn_title,cr_subasgn_content,cr_subasgn_date,cr_subasgn_file
+	</sql>
+	<sql id="crFeedbackColumnName">
+		cr_feed_code,cr_subasgn_code,user_id,cr_feed_content,cr_feed_date
+	</sql>
+
+	<!-- 과제 등록 (멘토) -->
+	<insert id="insertAsgn" parameterType="crAsgnDTO">
+		insert into cr_asgn
+		values('cr_asgn'||lpad(cr_asgn_seq.nextval,4,'0'), #{courseCode},
+		#{userId}, #{crAsgnTitle}, #{crAsgnDeadline}, sysdate,
+		#{crAsgnContent}, #{crAsgnReadnum})
+	</insert>
+
+	<!-- 과제 수정 (멘토) -->
+	<update id="updateAsgn" parameterType="crAsgnDTO">
+		update cr_asgn
+		set
+		cr_asgn_title=#{crAsgnTitle}, cr_asgn_deadline=#{crAsgnDeadline},
+		cr_asgn_date=sysdate, cr_asgn_content=#{crAsgnContent}
+		where
+		cr_asgn_code=#{crAsgnCode}
+	</update>
+
+	<!-- 과제 삭제 (멘토) -->
+	<delete id="deleteAsgn" parameterType="String">
+		delete from cr_asgn
+		where
+		cr_asgn_code=#{_paramter}
+	</delete>
+
+	<!-- 멘토가 등록한 과제물 리스트 출력 -->
+	<select id="selectAsgnList" parameterType="String" resultMap="menteeAsgnDTOMap">
+		select *
+		from cr_asgn c join mentee m
+		on c.user_id = m.user_id
+		where
+		course_code=#{_parameter}
+		order by cr_asgn_code desc
+	</select>
+
+	<!-- 멘토가 등록한 과제물 출력 -->
+	<select id="selectAsgn" parameterType="String" resultMap="menteeAsgnDTOMap">
+		select
+		*
+		from cr_asgn c join mentee m
+		on c.user_id = m.user_id
+		where
+		course_code=#{_parameter}
+	</select>
+
+	<!-- 멘토가 등록한 과제물 출력 -->
+	<select id="selectAsgnNoJoin" parameterType="String" resultMap="asgnSelectMap">
+		select *
+		from cr_asgn
+		where cr_asgn_code=#{_parameter}
+	</select>
+
+	<!-- 조회수 증가 -->
+	<update id="asgnReadnumUpdate" parameterType="String">
+		update cr_asgn
+		set
+		cr_asgn_readnum=cr_asgn_readnum+1
+		where cr_asgn_code= #{_parameter}
+	</update>
+
+
+	<!-- 클래스룸 과제제출 등록하기 -->
+	<insert id="insertSubAsgn" parameterType="crSubAsgnDTO">
+		insert into cr_sub_asgn
+		values(#{crAsgnCode}, #{userId}, #{crSubasgnTitle},
+		#{crSubasgnContent},
+		sysdate, #{crSubasgnFile})
+	</insert>
+
+
+	<!-- 클래스룸 과제제출 수정하기 -->
+	<update id="updateSubAsgn" parameterType="crSubAsgnDTO">
+		update cr_sub_asgn
+		set
+		cr_subasgn_title=#{crSubasgnTitle},
+		cr_subasgn_content=#{crSubasgnContent},
+		cr_subasgn_file=#{crSubasgnFile},
+		cr_subasgn_date=sysdate
+		where
+		cr_asgn_code =#{crAsgnCode} and user_id=#{userId}
+	</update>
+
+	<!-- 클래스룸 과제제출 삭제하기 -->
+	<delete id="deleteSubAsgn" parameterType="map">
+		delete from cr_sub_asgn
+		where cr_asgn_code =#{crAsgnCode} and user_id=#{userId}
+	</delete>
+
+
+	<!-- 멘티가 등록한 과제 리스트 출력 -->
+	<select id="selectSubAngnList" parameterType="String" resultMap="subAsgnSelectMap">
+		select *
+		from cr_sub_asgn
+		where cr_asgn_code = #{_parameter}
+	</select>
+
+	<!-- 멘티가 등록한 과제 출력 -->
+	<select id="selectSubAngn" parameterType="map" resultMap="subAsgnSelectMap">
+		select
+		*
+		from cr_sub_asgn
+		where cr_asgn_code =#{crAsgnCode} and
+		user_id=#{userId}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+	<resultMap type="menteeDTO" id="feedbackSelectMap">
+		<id column="user_id" property="userId" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_photo" property="userPhoto" />
+		<association property="feedback" javaType="crFeedbackDTO">
+			<id column="cr_feed_code" property="crFeedCode" />
+			<result column="cr_asgn_code" property="crAsgnCode" />
+			<result column="user_id" property="userId" />
+			<result column="mento_id" property="mentoId" />
+			<result column="cr_feed_content" property="crFeedContent" />
+			<result column="cr_feed_date" property="crFeedDate" />
+		</association>
+	</resultMap>
+
+
+	<!-- 피드백 등록하기 -->
+	<insert id="insertFeedback" parameterType="crFeedbackDTO">
+		insert into
+		cr_feedback
+		values('cr_feedback'||lpad(cr_feed_seq.nextval,4,'0'),#{crAsgnCode},
+		#{userId},#{mentoId}, #{crFeedContent}, sysdate)
+	</insert>
+
+	<!-- 피드백 수정하기 -->
+	<update id="updateFeedback" parameterType="crFeedbackDTO">
+		update cr_feedback
+		set
+		cr_feed_content=#{crFeedContent}, cr_feed_date=sysdate
+		where
+		cr_feed_code=#{crFeedCode}
+	</update>
+
+	<!-- 피드백 삭제하기 -->
+	<delete id="deleteFeedback" parameterType="String">
+		delete from
+		cr_feedback
+		where cr_feed_code=#{_parameter}
+	</delete>
+
+	<!-- 피드백 조회 -->
+	<select id="selectFeedback" parameterType="crSubAsgnDTO"
+		resultMap="feedbackSelectMap">
+		select *
+		from cr_feedback f join mentee m
+		on f.mento_id =
+		m.user_id
+		where cr_asgn_code = #{crAsgnCode} and f.user_id =#{userId}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<resultMap type="menteeDTO" id="menteeNoticeDTOMap">
+		<id column="user_id" property="userId" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_photo" property="userPhoto" />
+		<collection property="notices" ofType="crNoticeDTO">
+			<id column="cr_notice_code" property="crNoticeCode" />
+			<result column="course_code" property="courseCode" />
+			<result column="user_id" property="userId" />
+			<result column="cr_notice_title" property="crNoticeTitle" />
+			<result column="cr_notice_content" property="crNoticeContent" />
+			<result column="cr_notcie_date" property="crNoticeDate" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="crNoticeDTO" id="noticeDTOMap">
+		<id column="cr_notice_code" property="crNoticeCode" />
+		<result column="course_code" property="courseCode" />
+		<result column="user_id" property="userId" />
+		<result column="cr_notice_title" property="crNoticeTitle" />
+		<result column="cr_notice_content" property="crNoticeContent" />
+		<result column="cr_notcie_date" property="crNoticeDate" />
+	</resultMap>
+
+	<resultMap type="menteeDTO" id="menteeReplyDTOMap">
+		<id column="user_id" property="userId" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_photo" property="userPhoto" />
+		<collection property="replys" ofType="crNoticeReplyDTO">
+			<id column="cr_reply_code" property="crReplyCode" />
+			<result column="cr_notice_code" property="crNoticeCode" />
+			<result column="user_id" property="userId" />
+			<result column="cr_reply_content" property="crReplyContent" />
+			<result column="cr_reply_date" property="crReplyDate" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="crNoticeReplyDTO" id="noticeReplyDTOMap">
+		<id column="cr_reply_code" property="crReplyCode" />
+		<result column="cr_notice_code" property="crNoticeCode" />
+		<result column="user_id" property="userId" />
+		<result column="cr_reply_content" property="crReplyContent" />
+		<result column="cr_reply_date" property="crReplyDate" />
+	</resultMap>
+
+
+	<!-- 클래스룸 공지 등록 -->
+	<insert id="insertNotice" parameterType="crNoticeDTO">
+		insert into cr_notice
+		values('cr_notice'||lpad(cr_notice_seq.nextval,4,'0'), #{courseCode},
+		#{userId}, #{crNoticeTitle}, #{crNoticeContent}, sysdate)
+	</insert>
+
+	<!-- 클래스룸 공지 수정 -->
+	<update id="updateNotice" parameterType="crNoticeDTO">
+		update cr_notice
+		set
+		cr_notice_title=#{crNoticeTitle},
+		cr_notice_content=#{crNoticeContent},
+		cr_notice_date=sysdate
+		where
+		cr_notice_code=#{crNoticeCode}
+	</update>
+
+	<!-- 클래스룸 공지 삭제 -->
+	<delete id="deleteNotice" parameterType="String">
+		delete from cr_notice
+		where cr_notice_code=#{_paramter}
+	</delete>
+
+	<!-- 클래스룸 공지 리스트 출력 -->
+	<select id="selectNoticeList" parameterType="String" resultMap="menteeNoticeDTOMap">
+		select *
+		from cr_notice n join mentee m
+		on n.user_id = m.user_id
+		where
+		course_code=#{_parameter}
+		order by cr_notice_code desc
+	</select>
+
+	<!-- 클래스룸 공지 디테일 -->
+	<select id="selectNotice" parameterType="String" resultMap="noticeDTOMap">
+		select *
+		from cr_notice
+		where cr_notice_code=#{_parameter}
+	</select>
+
+	<!-- 공지댓글등록 -->
+	<insert id="insertNoticeReply" parameterType="crNoticeReplyDTO">
+		insert into
+		cr_notice_reply
+		values('cr_notice_reply'||lpad(cr_reply_seq.nextval,4,'0'),#{crNoticeCode},
+		#{userId},#{crReplyContent},sysdate)
+	</insert>
+
+	<!-- 공지댓글보기 -->
+	<select id="selectNoticeReply" resultMap="noticeReplyDTOMap">
+		select *
+		from
+		cr_notice_reply
+		order by cr_reply_date
+	</select>
+
+
+
+
+
+
+	<resultMap type="courseDTO" id="courseDTOMap">
+		<id column="course_code" property="courseCode" />
+		<result column="user_id" property="userId" />
+		<result column="course_title" property="courseTitle" />
+		<result column="course_top_group" property="courseTopGroup" />
+		<result column="course_sub_group" property="courseSubGroup" />
+		<result column="course_detail" property="courseDetail" />
+		<result column="course_level" property="courseLevel" />
+		<result column="course_recruit_max" property="courseRecruitMax" />
+		<result column="course_recruit_current" property="courseRecruitCurrent" />
+		<result column="course_recruit_period" property="courseRecruitPerid" />
+		<result column="course_start_date" property="courseStartDate" />
+		<result column="course_end_date" property="courseEndDate" />
+		<result column="course_frequency" property="courseFrequency" />
+		<result column="course_start_time" property="courseStartTime" />
+		<result column="course_end_time" property="courseEndTime" />
+		<result column="course_loc" property="courseLoc" />
+		<result column="course_price" property="coursePrice" />
+		<result column="course_url" property="courseUrl" />
+		<result column="course_backpic" property="courseBackpic" />
+	</resultMap>
+
+	<!-- header에 뿌려줄 course 정보 -->
+	<select id="selectCourseInfo" parameterType="String" resultMap="courseDTOMap">
+		select *
+		from course
+		where course_code=#{_parameter}
+	</select>
+ 	
+	<!-- header에 뿌려줄 마감임박 과제-->
+	<select id="selectDeadlineSubject" parameterType="String" resultMap="asgnSelectMap">
+		select * 
+		from cr_asgn
+		where cr_asgn_deadline >= sysdate and course_code=#{_parameter}
+		order by cr_asgn_deadline
+	</select>
+	
+	
+</mapper> 
+ 

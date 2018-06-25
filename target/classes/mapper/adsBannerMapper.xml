@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adsBannerMapper">
+	<resultMap type="adsBannerDTO" id="adsBannerSelectMap">
+		<id column="ads_code" property="adsCode" />
+		<result column="ads_name" property="adsName" />
+		<result column="ads_start_date" property="adsStartDate" />
+		<result column="ads_end_date" property="adsEndDate" />
+		<result column="ads_file_name" property="adsFileName" />
+		<result column="ads_link" property="adsLink" />
+		<result column="ads_price" property="adsPrice" />
+	</resultMap>
+
+	<!-- 광고등록하기 -->
+	<insert id="bannerInsert" parameterType="String">
+		insert into ads_banner
+		values('ads_banner'||lpad(ads_seq.nextval,4,'0'),#{adsName},
+		#{adsStartDate}, #{adsEndDate}, #{adsFileName}, #{adsLink},
+		#{adsPrice})
+	</insert>
+
+	<!-- 광고등록 리스트 출력 -->
+	<select id="bannerSelectList" resultMap="adsBannerSelectMap">
+		<!-- select *
+		from ads_banner
+		where ads_end_date <![CDATA[>]]>
+		sysdate
+		order by ads_code -->
+		select *
+		from ads_banner
+		where ads_end_date > (select to_char(sysdate,'YY/MM/DD') from dual)
+		order by ads_code
+	</select>
+
+	<!-- 광고삭제 -->
+	<delete id="bannerDelete" parameterType="String">
+		delete from ads_banner
+		where
+		ads_code=#{_paramter}
+	</delete>
+
+
+	<!-- 광고가져오기 -->
+	<select id="selectAdsOne" resultMap="adsBannerSelectMap">
+		select rownum,ads_code,
+		ads_name,ads_start_date,ads_end_date,ads_file_name,ads_link,ads_price
+		from ads_banner
+		where ads_end_date > (select to_char(sysdate,'YY/MM/DD') from dual)
+		and rownum =1
+	</select>
+</mapper> 
+ 

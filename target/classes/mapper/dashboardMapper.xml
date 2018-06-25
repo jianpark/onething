@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dashboardMapper">
+
+	<resultMap type="courseDTO" id="CourseBySelectMap">
+		<id column="course_code" property="courseCode"/>
+		<result column="user_id" property="userId"/>
+		<result column="course_title" property="courseTitle"/>
+		<result column="course_top_group" property="courseTopGroup"/>
+		<result column="course_sub_group" property="courseSubGroup"/>
+		<result column="course_detail" property="courseDetail"/>
+		<result column="course_level" property="courseLevel"/>
+		<result column="course_recruit_max" property="courseRecruitMax"/>
+		<result column="course_recruit_current" property="courseRecruitCurrent"/>
+		<result column="course_recruit_period" property="courseRecruitPerid"/>
+		<result column="course_start_date" property="courseStartDate"/>
+		<result column="course_end_date" property="courseEndDate"/>
+		<result column="course_frequency" property="courseFrequency"/>
+		<result column="course_start_time" property="courseStartTime"/>
+		<result column="course_end_time" property="courseEndTime"/>
+		<result column="course_loc" property="courseLoc"/>
+		<result column="course_price" property="coursePrice"/>
+		<result column="course_url" property="courseUrl"/>
+		<result column="course_backpic" property="courseBackpic"/>
+	</resultMap>
+	
+	<resultMap type="adsBannerDTO" id="BannerSelectMap">
+		<id column="ads_code" property="adsCode"/>
+		<result column="ads_name" property="adsName"/>
+		<result column="ads_start_date" property="adsStartDate"/>
+		<result column="ads_end_date" property="adsEndDate"/>
+		<result column="ads_file_name" property="adsFileName"/>
+		<result column="ads_link" property="adsLink"/>
+		<result column="ads_price" property="adsPrice"/>
+	</resultMap>	
+	
+	<select id="CourseByTop" resultMap="CourseBySelectMap">
+		select course_sub_group,course_price
+        from
+        (select c.course_sub_group, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where substr(pay_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)       
+        group by course_sub_group
+        order by sum(pay_price) desc)
+        where rownum &lt;6
+	</select> 
+	
+	<select id="CourseBy" resultMap="CourseBySelectMap">
+		select c.course_sub_group, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where substr(pay_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)       
+        group by course_sub_group
+        order by sum(pay_price) desc
+	</select>
+	
+	<select id="SearchCourseBy" parameterType="map" resultMap="CourseBySelectMap">
+		select c.course_sub_group, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where pay_date &gt;= substr(#{courseStartDate},3,10) and pay_date &lt;= substr(#{courseEndDate},3,10)       
+        group by course_sub_group
+        order by sum(pay_price) desc
+	</select>
+	
+	<select id="MentoByTop" resultMap="CourseBySelectMap">	
+        select user_id,course_price
+        from
+        (select c.user_id, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where substr(pay_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)  
+        group by c.user_id
+        order by sum(pay_price) desc)
+        where rownum &lt;6
+	</select> 
+	
+	<select id="MentoBy" resultMap="CourseBySelectMap">	
+        select c.user_id, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where substr(pay_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)  
+        group by c.user_id
+        order by sum(pay_price) desc
+	</select>
+	
+	<select id="SearchMentoBy" parameterType="map" resultMap="CourseBySelectMap">
+	 	select c.user_id, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        join course c 
+        on r.course_code =c.course_code 
+        where pay_date &gt;= substr(#{courseStartDate},3,10) and pay_date &lt;= substr(#{courseEndDate},3,10) 
+        group by c.user_id
+        order by sum(pay_price) desc
+	</select>
+	
+	<select id="Banner" resultMap="BannerSelectMap">
+		select ads_name, sum(ads_price) as ads_price
+        from ads_banner
+        where substr(ads_start_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)     
+        group by ads_name
+        order by ads_price desc
+	</select>
+	
+	<select id="SearchBanner" resultMap="BannerSelectMap">
+		select ads_name, sum(ads_price) as ads_price
+        from ads_banner
+        where ads_start_date &gt;= substr(#{adsStartDate},3,10) and ads_start_date &lt;= substr(#{adsEndDate},3,10)       
+        group by ads_name
+        order by ads_price desc
+	</select>
+	
+	<select id="BannerTop" resultMap="BannerSelectMap">
+		select ads_name,ads_price
+        from
+        (select ads_name, sum(ads_price) as ads_price
+        from ads_banner
+        where substr(ads_start_date,0,5) = (SELECT TO_CHAR(SYSDATE, 'YY/MM')FROM DUAL)     
+        group by ads_name
+        order by ads_price desc)
+        where rownum &lt;6
+	</select>
+	
+<!-- 	<select id="MonthBy" resultMap="CourseBySelectMap">
+		select substr(pay_date,0,5) as course_start_date, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        group by substr(pay_date,0,5)
+	</select> -->
+	
+	<select id="MonthBy" resultMap="CourseBySelectMap">
+        select substr(pay_date,0,5) as course_start_date, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        where substr(pay_date,0,2) = (SELECT TO_CHAR(SYSDATE, 'YY')FROM DUAL)
+        group by substr(pay_date,0,5)
+        order by substr(pay_date,0,5) asc
+	</select>	
+	
+	<select id="YearBy" resultMap="CourseBySelectMap">
+	    select substr(pay_date,0,2) as course_start_date, sum(pay_price) as course_price
+        from payment p 
+        join course_regist r
+        on p.pay_code = r.pay_code 
+        where substr(pay_date,0,2) = (SELECT TO_CHAR(SYSDATE, 'YY')FROM DUAL)
+        group by substr(pay_date,0,2)
+        order by substr(pay_date,0,2)
+	</select>
+	
+	<select id="MonthBanner" resultMap="BannerSelectMap">
+		select substr(ads_start_date,0,5) as ads_start_date, sum(ads_price) as ads_price
+        from ads_banner
+        where substr(ads_start_date,0,2) = (SELECT TO_CHAR(SYSDATE, 'YY')FROM DUAL)     
+        group by substr(ads_start_date,0,5)
+        order by substr(ads_start_date,0,5) asc
+	</select>
+
+   
+</mapper> 

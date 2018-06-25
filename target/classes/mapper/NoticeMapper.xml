@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticeMapper">
+
+	<resultMap type="noticeDTO" id="noticeSelectMap">
+		<id column="notice_code" property="noticeCode" />
+		<result column="notice_writer" property="noticeWriter" />
+		<result column="notice_title" property="noticeTitle" />
+		<result column="notice_content" property="noticeContent" />
+		<result column="notice_file_name" property="noticeFileName" />
+		<result column="notice_date" property="noticeDate"/>
+	</resultMap>
+	
+	<select id="selectAll" resultMap="noticeSelectMap">
+		select *
+		from notice
+		order by notice_date desc
+	</select>
+	
+	<insert id="insert" parameterType="noticeDTO">
+		insert 
+		into notice 
+		values ('notice'||lpad(notice_seq.nextval,4,'0'), '관리자', #{noticeTitle}, #{noticeContent}, #{noticeFileName}, sysdate)
+	</insert>
+	
+	<select id="select" resultMap="noticeSelectMap" parameterType="String">
+		select *
+		from notice
+		where notice_code=#{_parameter}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		delete from notice 
+		where notice_code=#{_parameter}
+	</delete>
+
+	<update id="updateNotice" parameterType="noticeDTO">
+		update notice
+		set
+		notice_title=#{noticeTitle},
+		notice_content=#{noticeContent},
+		notice_file_name=#{noticeFileName},
+		notice_date=sysdate
+		where
+		notice_code=#{noticeCode}
+	</update>
+	
+</mapper> 
+ 

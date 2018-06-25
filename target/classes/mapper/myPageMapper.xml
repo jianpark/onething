@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper     
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myPageMapper">
+
+	<resultMap id="selectMentoMap" type="courseDTO">
+		<id column="course_code" property="courseCode" />
+		<result column="user_id" property="userId" />
+		<result column="course_title" property="courseTitle" />
+		<result column="course_top_group" property="courseTopGroup" />
+		<result column="course_sub_group" property="courseSubGroup" />
+		<result column="course_detail" property="courseDetail" />
+		<result column="course_level" property="courseLevel" />
+		<result column="course_recruit_max" property="courseRecruitMax" />
+		<result column="course_recruit_current" property="courseRecruitCurrent" />
+		<result column="course_recruit_period" property="courseRecruitPerid" />
+		<result column="course_start_date" property="courseStartDate" />
+		<result column="course_end_date" property="courseEndDate" />
+		<result column="course_frequency" property="courseFrequency" />
+		<result column="course_start_time" property="courseStartTime" />
+		<result column="course_end_time" property="courseEndTime" />
+		<result column="course_loc" property="courseLoc" />
+		<result column="course_price" property="coursePrice" />
+		<result column="course_url" property="courseUrl" />
+		<result column="course_backpic" property="courseBackpic" />
+
+		<association property="menteeDTO" javaType="menteeDTO">
+			<id column="mentee_id" property="userId" />
+			<result column="user_pwd" property="userPwd" />
+			<result column="user_name" property="userName" />
+			<result column="user_phone" property="userPhone" />
+			<result column="user_email" property="userEmail" />
+			<result column="user_photo" property="userPhoto" />
+		</association>
+
+	</resultMap>
+
+	<resultMap id="selectMenteeMap" type="courseRegistDTO">
+
+		<id column="regist_code" property="registCode" />
+		<result column="regist_course_code" property="courseCode" />
+		<result column="pay_code" property="payCode" />
+		<result column="regist_user_id" property="userId" />
+		<result column="state" property="state" />
+
+		<association property="courseDTO" javaType="courseDTO">
+			<id column="course_code" property="courseCode" />
+			<result column="user_id" property="userId" />
+			<result column="course_title" property="courseTitle" />
+			<result column="course_top_group" property="courseTopGroup" />
+			<result column="course_sub_group" property="courseSubGroup" />
+			<result column="course_detail" property="courseDetail" />
+			<result column="course_level" property="courseLevel" />
+			<result column="course_recruit_max" property="courseRecruitMax" />
+			<result column="course_recruit_current" property="courseRecruitCurrent" />
+			<result column="course_recruit_period" property="courseRecruitPerid" />
+			<result column="course_start_date" property="courseStartDate" />
+			<result column="course_end_date" property="courseEndDate" />
+			<result column="course_frequency" property="courseFrequency" />
+			<result column="course_start_time" property="courseStartTime" />
+			<result column="course_end_time" property="courseEndTime" />
+			<result column="course_loc" property="courseLoc" />
+			<result column="course_price" property="coursePrice" />
+			<result column="course_url" property="courseUrl" />
+			<result column="course_backpic" property="courseBackpic" />
+
+			<association property="menteeDTO" javaType="menteeDTO">
+				<id column="mentee_id" property="userId" />
+				<result column="user_pwd" property="userPwd" />
+				<result column="user_name" property="userName" />
+				<result column="user_phone" property="userPhone" />
+				<result column="user_email" property="userEmail" />
+				<result column="user_photo" property="userPhoto" />
+			</association>
+
+		</association>
+	</resultMap>
+
+	<resultMap id="selectFavStudyMap" type="courseFavDTO">
+		<result column="fav_course_code" property="courseCode" />
+		<result column="fav_user_id" property="userId" />
+
+		<association property="courseDTO" javaType="courseDTO">
+			<id column="course_code" property="courseCode" />
+			<result column="user_id" property="userId" />
+			<result column="course_title" property="courseTitle" />
+			<result column="course_top_group" property="courseTopGroup" />
+			<result column="course_sub_group" property="courseSubGroup" />
+			<result column="course_detail" property="courseDetail" />
+			<result column="course_level" property="courseLevel" />
+			<result column="course_recruit_max" property="courseRecruitMax" />
+			<result column="course_recruit_current" property="courseRecruitCurrent" />
+			<result column="course_recruit_period" property="courseRecruitPerid" />
+			<result column="course_start_date" property="courseStartDate" />
+			<result column="course_end_date" property="courseEndDate" />
+			<result column="course_frequency" property="courseFrequency" />
+			<result column="course_start_time" property="courseStartTime" />
+			<result column="course_end_time" property="courseEndTime" />
+			<result column="course_loc" property="courseLoc" />
+			<result column="course_price" property="coursePrice" />
+			<result column="course_url" property="courseUrl" />
+			<result column="course_backpic" property="courseBackpic" />
+
+			<association property="menteeDTO" javaType="menteeDTO">
+				<id column="mentee_id" property="userId" />
+				<result column="user_pwd" property="userPwd" />
+				<result column="user_name" property="userName" />
+				<result column="user_phone" property="userPhone" />
+				<result column="user_email" property="userEmail" />
+				<result column="user_photo" property="userPhoto" />
+			</association>
+
+		</association>
+
+	</resultMap>
+
+
+
+	<resultMap type="testProblemSolutionDTO" id="testProblemSolution">
+		<id column="t_p_s_code" property="tpsCode" />
+		<result column="test_code" property="testCode" />
+		<result column="t_p_s_content" property="tpsContent" />
+		<result column="t_p_s_exam1" property="tpsExam1" />
+		<result column="t_p_s_exam2" property="tpsExam2" />
+		<result column="t_p_s_exam3" property="tpsExam3" />
+		<result column="t_p_s_exam4" property="tpsExam4" />
+		<result column="t_p_s_solution" property="tpsSolution" />
+	</resultMap>
+
+
+	<resultMap type="menteeDTO" id="userInfoSelection">
+		<id column="user_id" property="userId" />
+		<result column="user_name" property="userName" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_photo" property="userPhoto" />
+	</resultMap>
+
+	<resultMap type="mentoDTO" id="getMentoMajor">
+		<id column="user_id" property="userId" />
+		<result column="mento_major" property="mentoMajor" />
+		<result column="mento_major2" property="mentoMajor2" />
+		<result column="mento_major3" property="mentoMajor3" />
+	</resultMap>
+
+
+
+
+	<select id="selectProblems" parameterType="string" resultMap="testProblemSolution">
+		select
+		t_p_s_code,test_code,t_p_s_content,t_p_s_exam1,t_p_s_exam2,t_p_s_exam3,t_p_s_exam4,t_p_s_solution
+		from test_problem_solution
+		where test_code =(select test_code from test
+		where
+		test_classification=#{_parameter})
+	</select>
+
+	<select id="getCourseCode" resultType="string">
+		select max(course_code)
+		from course
+	</select>
+
+
+	<insert id="courseInsert" parameterType="courseDTO">
+		insert into course values
+		('c'||lpad(course_seq.nextval,4,'0'),#{userId},#{courseTitle},'스킬업단과',#{courseSubGroup},
+		#{courseDetail},#{courseLevel},#{courseRecruitMax},#{courseRecruitCurrent},sysdate,#{courseStartDate},#{courseEndDate},
+		#{courseFrequency},#{courseStartTime},#{courseEndTime},#{courseLoc},#{coursePrice}
+		<if test="courseUrl!=null">
+			,#{courseUrl}
+		</if>
+		<if test="courseUrl==null">
+			,null
+		</if>
+		<if test="courseBackpic!=null">
+			,#{courseBackpic}
+		</if>
+		<if test="courseBackpic==null">
+			,null
+		</if>
+		)
+	</insert>
+
+	<insert id="courseDayInsert" parameterType="courseDateDTO">
+		insert into
+		course_date values
+		('p'||lpad(course_seq.nextval,4,'0'),#{courseCode},#{day})
+	</insert>
+
+
+	<select id="memberInfoCollect" parameterType="string" resultType="menteeDTO">
+		select user_id as userId, user_name as userName,
+		user_phone as userPhone ,user_email as userEmail,user_photo as userPhoto
+		from mentee
+		where user_id = #{_parameter}
+	</select>
+	
+	<update id="description" parameterType="mentoDTO">
+		update mento
+		set mento_desc=#{mentoDesc}
+		where user_id=#{userId}
+	</update>
+	
+
+	<insert id="paymentInsert" parameterType="paymentDTO">
+		insert into payment
+		values
+		('p'||lpad(pay_seq.nextval,4,'0'),#{paidMethod},sysdate,#{paidAmount})
+	</insert>
+
+	<select id="getRecentPayCode" resultType="string">
+		select max(pay_code)
+		from payment
+	</select>
+	<!-- regist_code varchar2(30), course_code varchar2(30), pay_code varchar2(30), 
+		user_id varchar2(30), -->
+	<insert id="courseRegistInsert" parameterType="courseRegistDTO">
+		insert into
+		course_regist values
+		('r'||lpad(reg_seq.nextval,4,'0'),#{courseCode},#{payCode},#{userId})
+	</insert>
+
+	<update id="userInfoUpdate" parameterType="menteeDTO">
+		update mentee
+		set
+		user_phone= #{userPhone} , user_email= #{userEmail}, user_photo=
+		#{userPhoto}
+		where user_id = #{userId}
+	</update>
+
+	<update id="userInterUpdate" parameterType="interestedDTO">
+		update interested
+		set inter_field1=#{interField1}
+		<if test="#{interField2}!=null">,inter_field2=#{interField2}</if>		
+		<if test="#{interField3}!=null">,inter_field3=#{interField3}</if>
+		where user_id=#{userId}
+	</update>
+	
+	<select id="getMentoDesc" parameterType="string" resultType="string">
+		select mento_desc from mento where user_id=#{_parameter}
+	</select>
+
+
+	<select id="selectMento" parameterType="string" resultMap="selectMentoMap">
+		select course_code, course.user_id, course_title, course_top_group,
+		course_sub_group, course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time,
+		course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as
+		mentee_id, user_pwd, user_name, user_phone, user_email, user_photo
+		from course,mentee
+		where mentee.user_id=course.user_id and
+		course.course_end_date>sysdate and
+		course.user_id=#{value}
+	</select>
+
+	<select id="selectMentee" parameterType="string" resultMap="selectMenteeMap">
+		select regist_code, course_regist.course_code as regist_course_code,
+		pay_code, course_regist.user_id as regist_user_id, course.course_code,
+		course.user_id, course_title, course_top_group, course_sub_group,
+		course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time, course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as mentee_id, user_pwd, user_name, user_phone, user_email, user_photo
+		from course_regist,course,mentee
+		where course_regist.course_code=course.course_code and
+		course.user_id=mentee.user_id and
+		course.course_end_date>sysdate and
+		course_regist.user_id=#{value}
+		order by course_start_date asc
+	</select>
+
+
+	<delete id="menteeStudyDelete" parameterType="map">
+		delete from course_regist
+		where user_id=#{userId} and course_code=#{courseCode}
+	</delete>
+
+	<update id="menteeStudyCurrentUpdate" parameterType="string">
+		update course
+		set course_recruit_current=course_recruit_current-1
+		where course_code=#{courseCode}
+	</update>
+
+	<select id="favStudySelect" parameterType="string" resultMap="selectFavStudyMap">
+		select course_fav.course_code as fav_course_code, course_fav.user_id
+		as fav_user_id,
+		course.course_code, course.user_id, course_title, course_top_group, course_sub_group,
+		course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time, course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as mentee_id, user_pwd, user_name, user_phone, user_email, user_photo
+		from course_fav, course, mentee
+		where course_fav.course_code=course.course_code and
+		course.user_id=mentee.user_id and
+		course.course_end_date>sysdate and
+		course_fav.user_id=#{value}
+		order by course_start_date asc
+	</select>
+
+	<delete id="favStudyDelete" parameterType="map">
+		delete from course_fav
+		where user_id=#{userId} and course_code=#{courseCode}
+	</delete>
+
+	<select id="selectMentoEx" parameterType="string" resultMap="selectMentoMap">
+		select course_code, course.user_id, course_title, course_top_group,
+		course_sub_group, course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time, course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as mentee_id, user_pwd, user_name, user_phone, user_email, user_photo
+		from course,mentee
+		where course.user_id=mentee.user_id and
+		sysdate>course.course_end_date and
+		course.user_id=#{value}
+		order by course_start_date asc
+	</select>
+
+	<select id="selectMenteeEx" parameterType="string" resultMap="selectMenteeMap">
+		<!-- select regist_code, course_regist.course_code as regist_course_code, 
+			pay_code, course_regist.user_id as regist_user_id, course.course_code, course.user_id, 
+			course_title, course_top_group, course_sub_group, course_detail, course_level, 
+			course_recruit_max, course_recruit_current, course_recruit_period, course_start_date, 
+			course_end_date, course_frequency, course_start_time, course_end_time, course_loc, 
+			course_price, course_url, course_backpic, mentee.user_id as mentee_id, user_pwd, 
+			user_name, user_phone, user_email, user_photo from course_regist,course,mentee 
+			where course_regist.course_code=course.course_code and course.user_id=mentee.user_id 
+			and sysdate>course.course_end_date and course_regist.user_id=#{value} order 
+			by course_start_date asc -->
+
+		select regist_code, course_regist.course_code as regist_course_code,
+		pay_code, course_regist.user_id as regist_user_id, course.course_code,
+		course.user_id, course_title, course_top_group, course_sub_group,
+		course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time, course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as mentee_id, user_pwd, user_name, user_phone, user_email,
+		user_photo,
+		case
+		when course_regist.course_code in (select course_code from
+		MENTO_REPUTATION where rep_writer =#{value} ) then '리뷰 작성 완료'
+		else '리뷰 작성하러 가기'
+		end state
+		from course_regist,course,mentee
+		where course_regist.course_code=course.course_code and
+		course.user_id=mentee.user_id and
+		sysdate>course.course_end_date and
+		course_regist.user_id=#{value}
+		order by course_start_date asc
+	</select>
+
+	<select id="selectMenteeExByCourseCode" parameterType="map"
+		resultMap="selectMenteeMap">
+		select regist_code, course_regist.course_code as regist_course_code,
+		pay_code, course_regist.user_id as regist_user_id, course.course_code,
+		course.user_id, course_title, course_top_group, course_sub_group,
+		course_detail, course_level, course_recruit_max,
+		course_recruit_current, course_recruit_period, course_start_date,
+		course_end_date, course_frequency, course_start_time,
+		course_end_time, course_loc, course_price, course_url, course_backpic,
+		mentee.user_id as mentee_id, user_pwd, user_name, user_phone, user_email, user_photo
+		from course_regist,course,mentee
+		where course_regist.course_code=course.course_code and
+		course.user_id=mentee.user_id and
+		sysdate>course.course_end_date and
+		course_regist.user_id=#{userId} and
+		course_regist.course_code=#{courseCode}
+	</select>
+
+	<insert id="insertReview" parameterType="mentoReputationDTO">
+		insert into mento_reputation values('rep'||lpad(course_seq.nextval,4,'0'),
+		#{userId}, #{repWriter}, #{repContent}, sysdate, #{courseCode})
+	</insert>
+
+	<select id="selectReview" parameterType="mentoReputationDTO"
+		resultType="mentoReputationDTO">
+		select rep_code as repCode, user_id as userId, rep_writer as repWriter,
+		rep_content as repContent, rep_date as repDate, course_code as
+		courseCode
+		from mento_reputation
+		where course_code=#{courseCode} and rep_writer=#{repWriter}
+	</select>
+
+	<select id="getMajorMento" parameterType="string" resultMap="getMentoMajor">
+		select user_id, mento_major, mento_major2, mento_major3 
+		from mento
+		where user_id=#{_parameter} 
+	</select>
+	
+	<insert id="insertApplicant" parameterType="applicantDTO">
+		insert into
+		applicant 
+		values(#{userId}, #{applicantResume}, #{applicantMajor}, #{applicantMajor2}, #{applicantMajor3},0)
+	</insert>
+
+
+</mapper>
