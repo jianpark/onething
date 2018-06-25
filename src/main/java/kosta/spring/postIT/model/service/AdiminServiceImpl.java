@@ -38,9 +38,7 @@ public class AdiminServiceImpl implements AdminService {
 
 	@Override
 	public int mentoDelete(String userId) {
-		
 		return dao.mentoDelete(userId);
-		
 	}
 
 	

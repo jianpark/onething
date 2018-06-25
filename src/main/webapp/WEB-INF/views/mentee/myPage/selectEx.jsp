@@ -40,18 +40,17 @@ $(function(){
 						<li class="filter" data-filter="all"><a style="color: black;" href="${pageContext.request.contextPath}/myPage/favStudy/select?userId=${userId}">찜한 스터디</a></li>
 						<li class="filter" data-filter="all"><a style="color: black;" href= "${pageContext.request.contextPath}/myPage/exStudy/select?userId=${userId}">완료된 스터디</a></li>
 						<li class="filter" data-filter="all"><a style="color: black;" href="${pageContext.request.contextPath}/myPage/profile/updateForm">프로필 수정</a></li>
-						<li class="filter"><a style="color: black;" href="${pageContext.request.contextPath}/myPage/studyInsert/insertForm">스터디 만들기</a></li>
-					</ul>
+						<sec:authorize access="hasRole('ROLE_MENTO')">
+							<li class="filter"><a style="color: black;" href="${pageContext.request.contextPath}/myPage/studyInsert/insertForm">스터디 만들기</a></li>
+						</sec:authorize>					</ul>
 				</div>
 			</div>
 			</section>
 
 			<div class="pupular-course-inner clear">			
 			<c:choose>
-				<c:when test="${mentoExList[0] eq null}">
-				<div style="text-align: center;margin: 60px;">
-					<span style="color: black; font-weight: bold; font-size: 20px; ">완료된 스터디가 없습니다.</span>
-				</div>
+ 				<c:when test="${empty mentoExList[0]}">
+				
 				</c:when>
 				<c:otherwise>
 					<h1>끝난 스터디(멘토)</h1>
@@ -59,7 +58,7 @@ $(function(){
 			</c:choose>
 				<div class="row">
 					<c:choose>
-						<c:when test="${mentoExList[0] eq null}">
+						<c:when test="${mentoExList[0].courseDTO eq null}">
 						</c:when>
 						<c:otherwise>						
 																		
@@ -265,9 +264,19 @@ $(function(){
 								<div class=" col-md-4 col-lg-4">
 									<div class="course-content">
 										<div class="course-img">
-											<img class="img-responsive" src="${pageContext.request.contextPath}/resources/images/course/1.jpg " alt="image" />
+											<c:choose>
+												<%-- <img class="img-responsive" style="width:100%; height:230px;" src="${pageContext.request.contextPath}/resources/images/save/${mentoEx.courseBackpic}" alt="image" />	 --%>										
+												<c:when test="${empty menteeEx.courseDTO.courseBackpic}">
+				                               		<img class="img-responsive " style="width:100%; height:230px;" src="${pageContext.request.contextPath}/resources/images/course/2.jpg " alt="image" />
+				                            	</c:when>
+				                            	<c:otherwise>
+				                            		<img style="width:100%; height:230px;"
+														src="${pageContext.request.contextPath}/resources/images/save/${menteeEx.courseDTO.courseBackpic}"
+														class="img-responsive" alt="image">
+													<%-- <img class="img-responsive " src="${pageContext.request.contextPath}/resources/images/save/${courseDTO.courseBackpic} " style="width:100%; height:230px" alt="image" /> --%>
+				                            	</c:otherwise>
+			                            	</c:choose>
 										</div>
-										
 										<div class="course-detail">
 										<div style="text-align:center;">
 										<c:set var="courseSubGroup" scope="session" value="${menteeEx.courseDTO.courseSubGroup}" />
@@ -365,9 +374,23 @@ $(function(){
 											</h3>
 											</div>
 											<div class="course-icon">
-												<img
+												<%-- <img
 													src="${pageContext.request.contextPath}/resources/images/users/1.jpg"
-													class="img-responsive" alt="image">
+													class="img-responsive" alt="image"> --%>
+													<c:choose>
+													<%-- <img
+														src="${pageContext.request.contextPath}/resources/images/save/${mentoEx.menteeDTO.userPhoto}"
+														class="img-responsive" alt="image"> --%>
+													<c:when test="${empty menteeEx.courseDTO.menteeDTO.userPhoto}">
+					                               		<img class="img-responsive " src="${pageContext.request.contextPath}/resources/images/user/2.jpg " alt="image" />
+					                            	</c:when>
+					                            	<c:otherwise>
+					                            		<img 
+															src="${pageContext.request.contextPath}/resources/images/save/${menteeEx.courseDTO.menteeDTO.userPhoto}"
+															class="img-responsive" alt="image">
+														<%-- <img class="img-responsive " src="${pageContext.request.contextPath}/resources/images/save/${courseDTO.courseBackpic} " style="width:100%; height:230px" alt="image" /> --%>
+					                            	</c:otherwise>
+				                            	</c:choose>
 											</div>
 
 								

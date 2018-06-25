@@ -69,7 +69,7 @@
 	                                		<article class="row">
 				                                <div style="margin-left: 10px;">
 				                                    <figure class="thumbnail" style="margin-left: 10px; margin-top: 30px;">
-				                                        <img class="img-responsive" src="${pageContext.request.contextPath}/resources/images/users/2.jpg" alt="avatar" style="border-radius: 50px; width: 50px; height: 50px;"/>
+				                                        <img class="img-responsive" src="${pageContext.request.contextPath}/resources/images/save/Student_Reading-128.png" alt="avatar" style="border-radius: 50px; width: 50px; height: 50px;"/>
 				                                    </figure>
 				                                </div>
 				                                <div class="col-md-10 col-sm-10 col-xs-9">

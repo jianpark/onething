@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select *
 		from qna
 		where qa_reply_code is null
+		order by qa_date desc
 	</select>
 	
 	<select id="selectRepAll" resultMap="qnASelectMap">
