@@ -170,7 +170,7 @@ public class MyPageController {
 		int result = myPageService.courseInsert(courseDTO, values);
 		model.addAttribute("result", result);
 
-		return "/course";
+		return "redirect:/";
 	}
 
 	@RequestMapping("myPage/userUpdateResult")

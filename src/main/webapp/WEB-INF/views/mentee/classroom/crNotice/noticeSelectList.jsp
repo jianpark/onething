@@ -72,8 +72,8 @@
 					                                    			<c:when test="${notice.crNoticeCode == reply.crNoticeCode}">
 					                                    				<article class="row" style="margin-left: 5px;">
 											                                <div style="margin-left: 10px; margin-top: 30px;">
-											                                    <figure class="thumbnail">
-											                                        <img class="img-responsive" src="${pageContext.request.contextPath}/resources/images/users/2.jpg" alt="avatar" style="border-radius: 50px; width: 50px; height: 50px;"/>
+											                                    <figure class="thumbnail">											                                    	
+											                                    	<img class="img-responsive" src="${pageContext.request.contextPath}/resources/images/save/Student_Reading-128.png" alt="avatar" style="border-radius: 50px; width: 50px; height: 50px;"/>											              											                                        
 											                                    </figure>
 											                                </div>
 											                                <div class="col-md-10 col-sm-10 col-xs-9">

@@ -51,6 +51,7 @@
 
 					var ohlc=[], dataLength=data.length, i=0;					
 					var sum =0;
+					var sumbe=0;
 					var str = "";
 					$.each(data, function(index, item) {	
 						var courseCode = item.courseSubGroup;
@@ -83,17 +84,23 @@
 	                 		courseCodeName="네트워크 엔지니어";
 	                 	}
 	                 	
+	                 	var benefit = item.coursePrice/20;
+	                 	var benefitComma = benefit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 						var coursePriceComma = item.coursePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-						str += "<tr><td><span>" + (index+1) + "</span></td>"+
-							   "<th><span>" + courseCodeName + "</span></th>"+
-							   "<th><span>" + coursePriceComma + "</span></th></tr>";
+						str +=  "<tr><td><span>" + (index+1) + "</span></td>"+
+						   		"<th><span>" + courseCodeName + "</span></th>"+
+						   		"<th><span>" + coursePriceComma + "</span></th>"+
+						   		"<th><span>"+ benefitComma +"</span></th></tr>";
 						sum+=item.coursePrice;
+						sumbe+=benefit;
 					});
-					
+
 					var sumComma = sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					var sumComma2 = sumbe.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 					str += "<tr><td colspan='2'><span><Strong>총합</Strong></span></td>"+
-					  	   "<th><span>" + sumComma + "</span></th></tr>";
+					  	   "<th><span>" + sumComma + "</span></th>"+
+					  	   "<th><span>" + sumComma2 + "</span></th></tr>";
 					
 					//table영역에 추가
 					$("#resultTable tr:gt(0)").remove();
@@ -120,7 +127,7 @@
 				success:function(data) {  
 
 					var ohlc=[], dataLength=data.length, i=0;					
-
+					var sumbe=0;
 					var str = "";
 					var sum =0;
 					$.each(data, function(index, item) {	
@@ -154,17 +161,23 @@
 	                 		courseCodeName="네트워크 엔지니어";
 	                 	}
 
+	                 	var benefit = item.coursePrice/20;
+	                 	var benefitComma = benefit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 						var coursePriceComma = item.coursePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-						str += "<tr><td><span>" + (index+1) + "</span></td>"+
-							   "<th><span>" + courseCodeName + "</span></th>"+
-							   "<th><span>" + coursePriceComma + "</span></th></tr>";
+						str +=  "<tr><td><span>" + (index+1) + "</span></td>"+
+						   		"<th><span>" + courseCodeName + "</span></th>"+
+						   		"<th><span>" + coursePriceComma + "</span></th>"+
+						   		"<th><span>"+ benefitComma +"</span></th></tr>";
 						sum+=item.coursePrice;
+						sumbe+=benefit;
 					});
-					
+
 					var sumComma = sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					var sumComma2 = sumbe.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 					str += "<tr><td colspan='2'><span><Strong>총합</Strong></span></td>"+
-					  	   "<th><span>" + sumComma + "</span></th></tr>";
+					  	   "<th><span>" + sumComma + "</span></th>"+
+					  	   "<th><span>" + sumComma2 + "</span></th></tr>";
 					
 					//table영역에 추가
 					$("#resultTable tr:gt(0)").remove();
@@ -291,6 +304,7 @@
 				                        	<th>순위</th>
 				                            <th>스터디</th>
 				                            <th>수익</th>
+				                            <th>수수료</th>
 				                        </tr>
 				                    </tbody>
 				                </table>

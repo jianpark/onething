@@ -20,20 +20,20 @@
 					</c:set>
 
 					<ul>
-						<li class="filter" data-filter="all"><a
+						<li class="filter" data-filter="all"><a style="color: black;"
 							href="${pageContext.request.contextPath}/myPage/study/select?userId=${userId}">내
 								스터디</a></li>
-						<li class="filter" data-filter="all"><a
+						<li class="filter" data-filter="all"><a style="color: black;"
 							href="${pageContext.request.contextPath}/myPage/favStudy/select?userId=${userId}">찜한
 								스터디</a></li>
-						<li class="filter" data-filter="all"><a
+						<li class="filter" data-filter="all"><a style="color: black;"
 							href="${pageContext.request.contextPath}/myPage/exStudy/select?userId=${userId}">완료된
 								스터디</a></li>
-						<li class="filter" data-filter="all"><a
+						<li class="filter" data-filter="all"><a style="color: black;"
 							href="${pageContext.request.contextPath}/myPage/profile/updateForm">프로필
 								수정</a></li>
 						<sec:authorize access="hasRole('ROLE_MENTO')">
-							<li class="filter"><a
+							<li class="filter"><a style="color: black;"
 								href="${pageContext.request.contextPath}/myPage/studyInsert/insertForm">스터디
 									만들기</a></li>
 						</sec:authorize>
